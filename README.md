@@ -5,6 +5,7 @@ date: 'Due Friday, May 31st'
 geometry: margin=1in
 urlcolor: cyan
 ---
+Alan Lopez
 
 You may work alone or in a pair. If you work in a pair make sure to document who you are working with both in google classroom and commented in your program.
 
