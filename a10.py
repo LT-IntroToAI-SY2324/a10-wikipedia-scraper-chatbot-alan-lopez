@@ -114,7 +114,7 @@ def get_birth_date(name: str) -> str:
 
 
 def get_occupations(name: str) -> str:
-    """Gets birth date of the given person
+    """Gets occupation of the given person
 
     Args:
         name - name of the person
@@ -130,6 +130,25 @@ def get_occupations(name: str) -> str:
     match = get_match(infobox_text, pattern, error_text)
 
     return match.group("occupation")
+
+def get_course_of_food(name: str) -> str:
+    """Gets type of food
+
+    Args:
+        food - name of food
+
+    Returns:
+        type of given food
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
+    print(infobox_text)
+    pattern = r"Course(?P<course>[\w ,]+)"
+    error_text = (
+        "Page infobox has no occupation information"
+    )
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("course")
 
 
 # below are a set of actions. Each takes a list argument and returns a list of answers
@@ -162,15 +181,26 @@ def polar_radius(matches: List[str]) -> List[str]:
 
 
 def occupations(matches: List[str]) -> List[str]:
-    """Returns polar radius of planet in matches
+    """Returns occupation of person in matches
 
     Args:
-        matches - match from pattern of planet to find polar radius of
+        matches - match from pattern of person to find their occupation
 
     Returns:
-        polar radius of planet
+        occupation of named person
     """
     return [get_occupations(matches[0])]
+
+def course_of_food(matches: List[str]) -> List[str]:
+    """Returns course of food in matches
+
+    Args:
+        matches - match from pattern of food to find the course its served as
+
+    Returns:
+        course of food
+    """
+    return [get_course_of_food(matches[0])]
 
 
 # dummy argument is ignored and doesn't matter
@@ -189,6 +219,9 @@ pa_list: List[Tuple[Pattern, Action]] = [
     ("when was % born".split(), birth_date),
     ("what is the polar radius of %".split(), polar_radius),
     ("what was the occupation of %".split(), occupations),
+    ("what type of food is a %".split(), type_of_food),
+    ("what type of food is %".split(), type_of_food),
+    ("what type of food are %".split(), type_of_food),
     (["bye"], bye_action),
 ]
 
