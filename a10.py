@@ -131,6 +131,7 @@ def get_occupations(name: str) -> str:
 
     return match.group("occupation")
 
+
 def get_course_of_food(name: str) -> str:
     """Gets type of food
 
@@ -141,7 +142,7 @@ def get_course_of_food(name: str) -> str:
         type of given food
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
-    print(infobox_text)
+    # print(infobox_text)
     pattern = r"Course(?P<course>[\w ,]+)"
     error_text = (
         "Page infobox has no occupation information"
@@ -149,6 +150,31 @@ def get_course_of_food(name: str) -> str:
     match = get_match(infobox_text, pattern, error_text)
 
     return match.group("course")
+
+
+def get_capital(name: str) -> str:
+    """Gets capital of a country
+
+    Args:
+        country - name of country
+
+    Returns:
+        the country's capital
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
+    # print(infobox_text)
+    pattern = r"Capitaland largest city(?P<capital>\D+)"
+    second_pattern = r"Capital(?P<capital>\D+)"
+    error_text = (
+        "Page infobox has no capital information"
+    )
+    match = get_match(infobox_text, pattern, error_text)
+
+    if match != None:
+        return match.group("capital")
+    else:
+        match = get_match(infobox_text, second_pattern, error_text)
+        return match.group("capital")
 
 
 # below are a set of actions. Each takes a list argument and returns a list of answers
@@ -202,6 +228,17 @@ def course_of_food(matches: List[str]) -> List[str]:
     """
     return [get_course_of_food(matches[0])]
 
+def capital(matches: List[str]) -> List[str]:
+    """Returns capital city in matches
+
+    Args:
+        matches - match from pattern of country to find the capital
+
+    Returns:
+        capital of given country
+    """
+    return [get_capital(matches[0])]
+
 
 # dummy argument is ignored and doesn't matter
 def bye_action(dummy: List[str]) -> None:
@@ -219,9 +256,10 @@ pa_list: List[Tuple[Pattern, Action]] = [
     ("when was % born".split(), birth_date),
     ("what is the polar radius of %".split(), polar_radius),
     ("what was the occupation of %".split(), occupations),
-    ("what type of food is a %".split(), type_of_food),
-    ("what type of food is %".split(), type_of_food),
-    ("what type of food are %".split(), type_of_food),
+    ("what type of food is a %".split(), course_of_food),
+    ("what type of food is %".split(), course_of_food),
+    ("what type of food are %".split(), course_of_food),
+    ("what is the capital of %".split(), capital),
     (["bye"], bye_action),
 ]
 
